@@ -1,0 +1,26 @@
+<div class="header">
+    <a class="destroy">&#10006;</a>
+    <h1>{{name}}</h1>
+    <div class="time">{{date dt}}</div>
+</div>
+
+<div class="info">
+    <img src="img/{{icon weather.[0].icon}}.png"></img>
+	
+	<div class="temp">
+	   {{temp main.temp}} &deg;C
+	   <div class="tempMinMax">
+	       max: <em>{{temp main.temp_max}}</em> &deg;C<br />
+           min: <em>{{temp main.temp_min}}</em> &deg;C
+	   </div>
+	</div>
+	
+	
+	<div class="desc">{{weather.[0].description}}</div>
+</div>
+
+<div class="extras">
+	<div><em>Humidity:</em> <b>{{main.humidity}}</b> %</div>
+	<div><em>Pressure:</em> <b>{{main.pressure}}</b> hPa</div>
+    <div><em>Wind speed:</em> <b>{{wind.speed}}</b> km/h</div>
+</div>

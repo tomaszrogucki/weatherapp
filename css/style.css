@@ -1,0 +1,382 @@
+@font-face {
+    font-family: PoiretOne;
+    src: url(../fonts/PoiretOne-Regular.ttf);
+}
+
+html {
+	color: #ffffff;
+	font-family: PoiretOne, cursive, serif;
+	font-size: 18px;
+	font-weight: normal;
+}
+
+body {
+    background-image:url('../img/cubes.png');
+	height: 100%;
+    margin: 0;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+em {
+	color: #9bc5dd;
+	font-weight: bold;
+	font-style: normal;
+	font-size: 1em;
+}
+
+a {
+	cursor: pointer;
+	cursor: hand;
+}
+
+#weatherApp {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+#errorBar {
+    background-color: #373737;
+    color: #dd6666;
+    display: none;
+    font-weight: bold;
+    padding: 1em;
+    text-align: center;
+}
+
+#navigatinoBar {
+    background-color: #373737;
+    color: #9bc5dd;
+    font-weight: bold;
+    padding: 1em;
+    text-align: center;
+}
+
+#navigatinoBar a {
+	color: #ffffff;
+	padding-left: 1em;
+    padding-right: 1em;
+	text-decoration: none;
+    text-transform: uppercase;
+}
+
+#mapWrapper {
+    background-color: #373737;
+    display: none;
+    width: 1000%;
+    height: 40%;
+    padding-bottom: 1em;
+}
+
+#mapBar {
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+#mapBar:after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    margin-left: -1em;
+    margin-top: -2em;
+    width: 0px;
+    height: 0px;
+    border-top: 1em solid transparent;
+    border-left: 1em solid transparent;
+    border-bottom: 1em solid #373737;
+    border-right: 1em solid transparent;
+}
+
+#searchWrapper {
+    background-color: #373737;
+    display: none;
+	padding-bottom: 1em;
+}
+
+#searchBar {
+    background-color: #9bc5dd;
+    padding: 2em;
+    text-align: center;
+    position: relative;
+}
+
+#searchBar:after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    margin-left: -1em;
+    margin-top: -2em;
+    width: 0px;
+    height: 0px;
+    border-top: 1em solid transparent;
+    border-left: 1em solid transparent;
+    border-bottom: 1em solid #373737;
+    border-right: 1em solid transparent;
+}
+
+#searchBar > div {
+    color: #373737;
+    font-size: 1.5em;
+    font-weight: bold;
+    padding: 1em;
+    padding-top: 0;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+#searchCity {
+    background-image:url('../img/cubes.png');
+    background-color: #ffffff;
+    border: .5em solid #373737;
+    border-radius: 1em;
+    color: #373737;
+    font-size: 1em;
+    font-weight: bold;
+    padding: 1em;
+    text-align: center;
+    width: 20em;
+    height: 1.5em;
+}
+
+#content {
+	height: 100%;
+	margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+#content .location {
+    background-color: #9bc5dd;
+    border-radius: 1em;
+    display: inline-block;
+    margin: 4%;
+    width: 25%;
+}
+
+
+#content .header {
+	font-size: 1em;
+    background-color: #373737;
+    border-top-left-radius: 1em;
+    border-top-right-radius: 1em;
+    border-bottom: 1px solid #9bc5dd;
+    margin: 0;
+    padding: 2em;
+    position: relative;
+    text-align: center;
+}
+
+#content .header .destroy {
+	float: right;
+	margin-right: -2em;
+    margin-top: -2em;
+	width: 1.5em;
+	height: 1.5em;
+	display: block;
+	text-transform: uppercase;
+	text-decoration: none;
+	color: #373737;
+	background: #9bc5dd;
+	text-align: center;
+	font-size: 1.5em;
+	line-height: 1.5em;
+	border-radius: 50%;
+	font-weight: bold;
+}
+
+#content .header h1 {
+    font-size: 2em;
+    overflow: hidden
+    text-transform: uppercase;
+}
+
+#content .header .time {
+    color: #9bc5dd;
+    font-weight: bold;
+}
+
+
+#content .info {
+    font-size: 1em;
+    background-color: #373737;
+    border-radius: 0;
+    border-bottom: 1px solid #9bc5dd;
+    margin: 0;
+    padding: 2em;
+}
+
+#content .info .desc {
+    clear: both;
+    color: #9bc5dd;
+    font-size: 1.5em;
+    font-weight: bold;
+    padding-top: 1em;
+}
+
+#content .info .temp {
+	color: #9bc5dd;
+	font-size: 2.5em;
+	font-weight: bold;
+    float: right;
+}
+
+#content .info .tempMinMax {
+    font-size: 0.4em;
+    margin-top: 1.5em;
+    text-align: right;
+}
+
+#content .info .tempMinMax em {
+    font-weight: bold;
+}
+
+#content .extras {
+    font-size: 1em;
+    background-color: #373737;
+    border-radius: 0;
+    border-bottom: 1px solid #9bc5dd;
+    border-bottom-left-radius: 1em;
+    border-bottom-right-radius: 1em;
+    margin: 0;
+    margin-bottom: 2em;
+    padding: 2em;
+    position: relative;
+}
+
+#content .extras em {
+    font-weight: bold;
+    margin-right: 1em;
+
+}
+
+#content .extras:after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    margin-left: -1em;
+    width: 0px;
+    height: 0px;
+    border-top: 1em solid #373737;
+    border-left: 1em solid transparent;
+    border-bottom: 1em solid transparent;
+    border-right: 1em solid transparent;
+}
+
+#initialInfo {
+	color: #373737;
+	font-size: 2.5em;
+	padding: 3em;
+	text-align: center;
+	line-height: 2em;
+}
+
+#initialInfo em {
+    color: #373737;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+
+
+
+
+/*
+#content .extras:before {
+    content: 'Additional info';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #373737;
+    background-color: #9bc5dd;
+    font-size: .8em;
+    padding: .1em;
+    padding-left: 0.6em;
+    padding-right: 0.6em;
+    text-align: center;
+}
+
+#content .header:after {
+    content: 'Location/time';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    color: #373737;
+    background-color: #9bc5dd;
+    font-size: .8em;
+    padding: .1em;
+    padding-left: 0.6em;
+    padding-right: 0.6em;
+    text-align: center;
+}
+*/
+
+
+
+@media screen and (orientation:portrait) {
+	#content .location {
+	    margin: 5%;
+	    width: 40%;
+	}
+}
+
+
+@media screen and (max-width:1400px) {
+    body {
+        font-size: 16px;
+    }
+}
+
+@media screen and (max-width:1024px) {
+    body {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width:800px) {
+    body {
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width:640px) {
+    body {
+        font-size: 10px;
+    }
+    
+    #content .location {
+        margin: 5%;
+        width: 40%;
+    }
+}
+
+@media screen and (max-width:480px) {
+    body {
+        font-size: 12px;
+    }
+    
+    #content .location {
+        margin: 5%;
+        width: 90%;
+    }
+}
+
+@media screen and (max-width:320px) {
+    body {
+        font-size: 10px;
+    }
+    
+    #content .location {
+        margin: 5%;
+        width: 90%;
+    }
+}

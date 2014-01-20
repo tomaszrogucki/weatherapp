@@ -1,0 +1,26 @@
+{
+  "name": "weatherapp",
+  "version": "0.1.0",
+  "description": "Weather application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "author": "Tomasz Rogucki",
+  "license": "BSD",
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-connect": "~0.6.0",
+    "grunt-contrib-watch": "~0.5.3",
+    "ddd-jquery": "~0.4.0",
+    "backbone": "~1.1.0",
+    "handlebars": "~1.3.0",
+    "browserify": "~3.20.0",
+    "grunt-browserify": "~1.3.0",
+    "grunt-contrib-handlebars": "~0.6.0",
+    "hbsfy": "~1.3.1",
+    "backbone.localstorage": "~1.1.7",
+    "grunt-cli": "~0.1.11"
+  }
+}
