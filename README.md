@@ -13,6 +13,13 @@ npm install
 grunt
 ```
 
+* If your environment has not been yet configured to work with grunt and nodejs, you may want to run the following commands:
+
+```
+sudo npm install -g grunt-cli
+sudo ln -s /usr/bin/nodejs /usr/bin/node
+```
+
 ## Open application:
 
 * To use the app, plese navigate to http://localhost:8888

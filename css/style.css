@@ -42,8 +42,8 @@ a {
 }
 
 #errorBar {
-    background-color: #373737;
-    color: #dd6666;
+    background-color: #dd6666;
+    color: #373737;
     display: none;
     font-weight: bold;
     padding: 1em;
@@ -69,7 +69,7 @@ a {
 #mapWrapper {
     background-color: #373737;
     display: none;
-    width: 1000%;
+    width: 100%;
     height: 40%;
     padding-bottom: 1em;
 }

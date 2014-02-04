@@ -46,10 +46,6 @@ var Location = Backbone.Model.extend({
 			return this.urlRoot + 'lat=' + this.get('lat') + '&lon=' + this.get('lon') + '&units=metric';
 		}
 	},
-	fetch: function() {
-		Backbone.Model.prototype.fetch.apply(this, arguments);
-		return this;
-	},
 	destroy: function() {
 		// Do not send DELETE request to the server. Just trigger destroy event.
 		this.trigger('destroy', this);
@@ -67,8 +63,6 @@ var Location = Backbone.Model.extend({
 var LocationList = Backbone.Collection.extend({
 	model: Location
 });
-
-var locations = new LocationList;
 
 var LocationView = Backbone.View.extend({
 	template: locationTemplate,
@@ -102,12 +96,13 @@ var LocationStorageList = Backbone.Collection.extend({
 	model: LocationStorage,
 	// Use LocalStorage
 	localStorage: new Backbone.LocalStorage('weatherapp'),
-	initialize: function() {
+	initialize: function(locations) {
+		this.locations = locations;
 		this.on('add',this.storeLocationStorage);
 		// Update this collection each time Location collection changes
-		this.listenTo(locations, 'add', this.addLocationStorage);
-		this.listenTo(locations, 'destroy', this.deleteLocationStorage);
-		this.fetch();
+		this.listenTo(this.locations, 'add', this.addLocationStorage);
+		this.listenTo(this.locations, 'destroy', this.deleteLocationStorage);
+		this.fetch({success: this.populate.bind(this)});
 	},
 	// Add to collection
 	addLocationStorage: function(location) {
@@ -131,15 +126,28 @@ var LocationStorageList = Backbone.Collection.extend({
 		return this;
 	},
 	deleteLocationStorage: function(location) {
-		console.log(arguments);
 		var locationStorage = this.findWhere({id: location.get('id')});
 		Backbone.sync('delete', locationStorage);
 		this.remove(locationStorage);
 		return this;
+	},
+	// Populate LocationCollection from LocalStorage on the application startup
+	populate: function() {
+		this.each(function(locationStorage) {
+			var attributes = {};
+			if(locationStorage.get('city')) {
+				attributes.city = locationStorage.get('city');
+			}
+			else if(locationStorage.get('lat') && locationStorage.get('lon')) {
+				attributes.lat = locationStorage.get('lat');
+				attributes.lon = locationStorage.get('lon');
+			}
+			var location = new Location(attributes);
+			location.fetch({success: this.locations.add.bind(this.locations, location, {validate: true})});
+		}.bind(this));
+		return this;
 	}
 });
-
-var locationStorages = new LocationStorageList;
 
 
 // The main application view
@@ -152,22 +160,27 @@ var AppView = Backbone.View.extend({
 		'click #navigationMap': 'handleClick'
 	},
 	initialize: function() {
+		this.locations = new LocationList();
+		this.locationStorages = new LocationStorageList(this.locations);
 		this.render();
 		this.input = this.$('#searchCity');
-		this.input.focus();
-		this.listenTo(locations, 'add', this.addLocationView);
-		this.populate();
+		this.listenTo(this.locations, 'add', this.addLocationView);
+		this.listenTo(this.locations, 'add', this.addMapView);
+		this.listenTo(this.locations, 'remove', this.removeMapView);
 		
 		// Google maps here
-		this.mapOptions = {center: new google.maps.LatLng(52.5167,13.3833), zoom: 4};
+		this.mapOptions = {center: new google.maps.LatLng(57.5167,-23.3833), zoom: 4};
 		this.map = new google.maps.Map(document.getElementById("mapBar"), this.mapOptions);
+		this.mapDoubleClicked = false;
 		google.maps.event.addListener(this.map, 'click', function(event) {
-			this.mapCity(event.latLng.lat(),event.latLng.lng());
-			var marker = new google.maps.Marker({
-				position: event.latLng,
-				map: this.map
-			});
+			this.mapDoubleClicked = false;
+			setTimeout(function(event) {
+				if(!this.mapDoubleClicked) {
+					this.mapCity(event.latLng.lat(),event.latLng.lng());
+				}
+			}.bind(this,event), 200);
 		}.bind(this));
+		google.maps.event.addListener(this.map, 'dblclick', function() { this.mapDoubleClicked = true; }.bind(this));
 		google.maps.event.addListener(this.map, 'drag', function() { google.maps.event.trigger(this.map, 'resize'); }.bind(this) );
 		
 		// Poll server
@@ -176,6 +189,20 @@ var AppView = Backbone.View.extend({
 	addLocationView: function(location) {
 		var view = new LocationView({model: location});
 		this.$el.find('#content').prepend(view.render().el);
+		return this;
+	},
+	addMapView: function(location) {
+		var latLng = new google.maps.LatLng(location.get('coord').lat,location.get('coord').lon);
+		var marker = new google.maps.Marker({
+			position: latLng,
+			title: location.get('name'),
+			map: this.map
+		});
+		location.set({'marker': marker});
+		return this;
+	},
+	removeMapView: function(location) {
+		location.get('marker').setMap(null);
 		return this;
 	},
 	render: function() {
@@ -194,7 +221,7 @@ var AppView = Backbone.View.extend({
 			}
 		};
 		// Fetch model from RESTful server with the city name as key. If successful, add the model to the collection
-		searchLocation.fetch({success: locations.add.bind(locations,searchLocation), validate: true, complete: invalid.bind(this, searchLocation)});
+		searchLocation.fetch({success: this.locations.add.bind(this.locations,searchLocation), validate: true, complete: invalid.bind(this, searchLocation)});
 		this.input.val('');
 	},
 	// Search city by location when map clicked
@@ -206,7 +233,7 @@ var AppView = Backbone.View.extend({
 			}
 		};
 		// Fetch model from RESTful server with the city coordinates as key. If successful, add the model to the collection
-		mapLocation.fetch({success: locations.add.bind(locations,mapLocation), validate: true, complete: invalid.bind(this, mapLocation)});
+		mapLocation.fetch({success: this.locations.add.bind(this.locations,mapLocation), validate: true, complete: invalid.bind(this, mapLocation)});
 		return this;
 	},
 	removeLocation: function(location) {
@@ -215,23 +242,7 @@ var AppView = Backbone.View.extend({
 	},
 	// Update models with fresh data from the RESTful server
 	refresh: function() {
-		locations.each(function(location) {location.fetch();});
-		return this;
-	},
-	// Populate LocationCollection from LocalStorage on the application startup
-	populate: function() {
-		locationStorages.each(function(locationStorage) {
-			var attributes = {};
-			if(locationStorage.get('city')) {
-				attributes.city = locationStorage.get('city');
-			}
-			else if(locationStorage.get('lat') && locationStorage.get('lon')) {
-				attributes.lat = locationStorage.get('lat');
-				attributes.lon = locationStorage.get('lon');
-			}
-			var location = new Location(attributes);
-			location.fetch({success: locations.add.bind(locations, location, {validate: true})});
-		});
+		this.locations.each(function(location) {location.fetch();});
 		return this;
 	},
 	// Notify the user of any errors
@@ -244,6 +255,7 @@ var AppView = Backbone.View.extend({
 		// Wind up/down the city search panel
 		if(event.target.id === 'navigationSearch') {
 			this.$('#searchWrapper').slideToggle('slow');
+			this.input.focus();
 		}
 		// Wind up/down the map
 		if(event.target.id === 'navigationMap') {
@@ -256,4 +268,4 @@ var AppView = Backbone.View.extend({
 });
 
 // Initialise the application
-var appView = new AppView;
+var appView = new AppView();
